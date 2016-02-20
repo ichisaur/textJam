@@ -7,6 +7,7 @@ PLAYLISTNAME = 'textJam'
 isPlaylistCreated = False
 loginID = 'jusanden7@gmail.com'
 authToken = 'zpewalrdeytbdhmu'
+defaultQuery = "Mr. Brightside"
 
 
 def parseQuery(query):
@@ -43,6 +44,13 @@ def addSong(song):
     else:
         return 0
 
+
+def listContains(song, listOfSongs):
+    for i in listOfSongs:
+        if i.songID == song.songID:
+            return True
+    return False
+
 api = Mobileclient()
 # implement a solution to have user login
 logged_in = api.login(loginID, authToken, Mobileclient.FROM_MAC_ADDRESS)
@@ -51,7 +59,7 @@ if (logged_in):
 else:
     print("Log in failed, please verify login details")
 
-
+"""
 s = parseQuery('Animal Collective')
 print(s.title)
 print(s.artist)
@@ -61,3 +69,28 @@ s = parseQuery('Ho Hey')
 print(s.title)
 print(s.artist)
 addSong(s)
+"""
+
+createPlaylist()
+songList = []
+stopPlayback = False
+while not stopPlayback:
+
+    userQuery = input('Input song keyword: ')
+    if userQuery == 'stop':
+        stopPlayback = True
+        break
+    s = parseQuery(userQuery)
+    if not listContains(s, songList):
+        addSong(s)
+        songList.append(s)
+
+
+# MainLoop
+"""
+running = True
+while running:
+    while noinput:
+
+"""
+# make wait sequence by getting system time and adding onto system time with voting system?
