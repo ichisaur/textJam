@@ -7,7 +7,8 @@ PLAYLISTNAME = 'textJam'
 isPlaylistCreated = False
 loginID = 'jusanden7@gmail.com'
 authToken = 'zpewalrdeytbdhmu'
-defaultQuery = "Mr. Brightside"
+defaultQuery1 = "Mr. Brightside"
+defaultQuery2 = "Ho Hey"
 
 
 def parseQuery(query):
@@ -51,6 +52,28 @@ def listContains(song, listOfSongs):
             return True
     return False
 
+
+def topVotedSong(listOfSongs):
+    topSong = listOfSongs[1]
+    for i in listOfSongs:
+        if i.votes >= topSong.votes:
+            topSong = i
+    return topSong
+
+
+def addTopSong(songList):
+    api.add_songs_to_playlist(playlistID, topVotedSong(songList).songID)
+    topVotedSong(songList).votes = -1
+
+
+def returnSong(song, songList):
+    for i in songList:
+        if song.songID == i.songID:
+            return i
+    else:
+        return song
+
+
 api = Mobileclient()
 # implement a solution to have user login
 logged_in = api.login(loginID, authToken, Mobileclient.FROM_MAC_ADDRESS)
@@ -59,31 +82,29 @@ if (logged_in):
 else:
     print("Log in failed, please verify login details")
 
-"""
-s = parseQuery('Animal Collective')
-print(s.title)
-print(s.artist)
-createPlaylist()
-addSong(s)
-s = parseQuery('Ho Hey')
-print(s.title)
-print(s.artist)
-addSong(s)
-"""
 
 createPlaylist()
+
 songList = []
+queuedSongList = []
 stopPlayback = False
 while not stopPlayback:
-
     userQuery = input('Input song keyword: ')
-    if userQuery == 'stop':
+    if userQuery == '#stop':
         stopPlayback = True
         break
     s = parseQuery(userQuery)
     if not listContains(s, songList):
-        addSong(s)
         songList.append(s)
+        s.vote()
+    else:
+        s = returnSong(s, songList)
+        if not s.votes == -1:
+            s.vote()
+    print(s.votes)
+deletePlaylist()
+
+
 
 
 # MainLoop
