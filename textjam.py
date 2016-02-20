@@ -22,7 +22,8 @@ def parseQuery(query):
     parsedID = results['song_hits'][0]['track']['storeId']
     parsedTitle = results['song_hits'][0]['track']['title']
     parsedArtist = results['song_hits'][0]['track']['artist']
-    return classes.Song(parsedTitle, parsedArtist, parsedID)
+    parsedLength = results['song_hits'][0]['track']['durationMillis']
+    return classes.Song(parsedTitle, parsedArtist, parsedLength, parsedID)
 
 def createPlaylist():
     playlistID = api.create_playlist(PLAYLISTNAME, 'none', True)

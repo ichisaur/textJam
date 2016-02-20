@@ -4,9 +4,10 @@ class Song():
 
     
 
-    def __init__(self, title, artist, songID):
+    def __init__(self, title, artist, duration, songID):
         self.title = title
         self.artist = artist
+        self.duration = duration
         self.songID = songID
         self.votes = 0
     
