@@ -25,25 +25,32 @@ def parseQuery(query):
     return Song(parsedTitle, parsedArtist, parsedLength, parsedID)
 
 
-def createPlaylist():
+def createPlaylist()
+    global playlistID
+    global isPlaylistCreated
+
     playlistID = api.create_playlist(PLAYLISTNAME, 'none', True)
-    isPlaylistCreated = True;
+    isPlaylistCreated = True
 
 
 def deletePlaylist():
+    global isPlaylistCreated
+
     if (isPlaylistCreated):
         api.delete_playlist(playlistID)
         isPlaylistCreated = False
     else:
         print("Playlist Not Created Yet")
 
+
+def addSong(song):
+    if (isPlaylistCreated):
+        api.add_songs_to_playlist(playlistID, song.songID)
+        return 1
+    else:
+        return 0
+
+
 s = parseQuery('Animal Collective')
 print(s.title)
 print(s.artist)
-
-
-
-
-
-
-
