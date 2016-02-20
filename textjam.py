@@ -88,6 +88,9 @@ createPlaylist()
 songList = []
 queuedSongList = []
 stopPlayback = False
+
+#def loopfunction
+#system alarm timefornext song
 while not stopPlayback:
     userQuery = input('Input song keyword: ')
     if userQuery == '#stop':
@@ -104,6 +107,7 @@ while not stopPlayback:
     print(s.votes)
 deletePlaylist()
 
+#loopfunction
 
 
 
