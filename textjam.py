@@ -19,11 +19,13 @@ def parseQuery(query):
     results = api.search_all_access(query, 10)
     parsedID = results['song_hits'][0]['track']['storeId']
     parsedTitle = results['song_hits'][0]['track']['title']
-    return classes.Song(parsedTitle, parsedID)
+    parsedArtist = results['song_hits'][0]['track']['artist']
+    return classes.Song(parsedTitle, parsedArtist, parsedID)
 
 
-s = parseQuery('Yellow')
+s = parseQuery('Drake summer')
 print(s.title)
+print(s.artist)
 
 
 
