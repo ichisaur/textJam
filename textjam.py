@@ -25,7 +25,7 @@ def parseQuery(query):
     return Song(parsedTitle, parsedArtist, parsedLength, parsedID)
 
 
-def createPlaylist()
+def createPlaylist():
     global playlistID
     global isPlaylistCreated
 
