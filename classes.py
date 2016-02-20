@@ -30,9 +30,3 @@ class User():
         else:
             return 0
 
-class TextMessage(): 
-
-    """Stores Text Message Data"""
-
-
- 
