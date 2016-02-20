@@ -5,15 +5,8 @@ from classes import Song, User
 
 PLAYLISTNAME = 'textJam'
 isPlaylistCreated = False
-
-
-api = Mobileclient()
-# implement a solution to have user login
-logged_in = api.login('jusanden7@gmail.com', 'zpewalrdeytbdhmu', Mobileclient.FROM_MAC_ADDRESS)
-if (logged_in):
-    print("logged in")
-else:
-    print("Log in failed, please verify login details")
+loginID = 'jusanden7@gmail.com'
+authToken = 'zpewalrdeytbdhmu'
 
 
 def parseQuery(query):
@@ -50,7 +43,21 @@ def addSong(song):
     else:
         return 0
 
+api = Mobileclient()
+# implement a solution to have user login
+logged_in = api.login(loginID, authToken, Mobileclient.FROM_MAC_ADDRESS)
+if (logged_in):
+    print("logged in")
+else:
+    print("Log in failed, please verify login details")
+
 
 s = parseQuery('Animal Collective')
 print(s.title)
 print(s.artist)
+createPlaylist()
+addSong(s)
+s = parseQuery('Ho Hey')
+print(s.title)
+print(s.artist)
+addSong(s)
