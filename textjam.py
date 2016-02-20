@@ -3,6 +3,8 @@ from gmusicapi import Mobileclient
 import twilio.twiml
 import classes
 
+PLAYLISTNAME = 'textJam'
+isPlaylistCreated = False;
 
 
 api = Mobileclient()
@@ -22,8 +24,18 @@ def parseQuery(query):
     parsedArtist = results['song_hits'][0]['track']['artist']
     return classes.Song(parsedTitle, parsedArtist, parsedID)
 
+def createPlaylist():
+    playlistID = api.create_playlist(PLAYLISTNAME, 'none', True)
+    isPlaylistCreated = True;
 
-s = parseQuery('Drake summer')
+def deletePlaylist():
+    if (isPlaylistCreated):
+        api.delete_playlist(playlistID)
+        isPlaylistCreated = False
+    else:
+        print("Playlist Not Created Yet")
+
+s = parseQuery('Animal Collective')
 print(s.title)
 print(s.artist)
 
