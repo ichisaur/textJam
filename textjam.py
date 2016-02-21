@@ -1,23 +1,30 @@
 
 from gmusicapi import Mobileclient
-from classes import Song, User, Message
+from twilio.rest import TwilioRestClient
+from classes import Song, Message
 import threading
 import time
-from threading import Timer
-from twilio.rest import TwilioRestClient
 
-PLAYLISTNAME = 'textJam'
-isPlaylistCreated = False
+
 loginID = 'jusanden7@gmail.com'
 authToken = 'zpewalrdeytbdhmu'
+
+
+account_sid = "ACbf9419ced7dab1a623f67761020ac869"
+auth_token = "e1ce02cee81b5fc6605e734845ea6882" #todo Differentiate the variables
+
+
+PLAYLISTNAME = 'textJam'
 defaultQuery1 = "Mr. Brightside"
 defaultQuery2 = "Ho Hey"
-currentSongLength = 15
-stopPlayback = False
-index = 0
-listOfMessages = []
 twilioNumber = "+15152596034"
 
+
+
+currentSongLength = 15
+stopPlayback = False
+isPlaylistCreated = False
+listOfMessages = []
 
 class timerThread (threading.Thread):
     def __init__(self, threadID):
@@ -36,7 +43,9 @@ class timerThread (threading.Thread):
 
 
 def parseQuery(query):
-    results = api.search_all_access(query, 50)
+    results = api.search_all_access(query, 15)
+    if results['song_hits'] == []:
+        return 'error'
     parsedID = results['song_hits'][0]['track']['storeId']
     parsedTitle = results['song_hits'][0]['track']['title']
     parsedArtist = results['song_hits'][0]['track']['artist']
@@ -50,7 +59,6 @@ def createPlaylist():
 
     playlistID = api.create_playlist(PLAYLISTNAME, 'none', True)
     isPlaylistCreated = True
-
 
 def deletePlaylist():
     global isPlaylistCreated
@@ -115,8 +123,23 @@ def filterMessages(number):
     for i in messages:
         newMessages.append(parseMessage(i))
         ssid = i.sid
+        if i.status == 'queued':
+            time.sleep(2)
         client.messages.delete(ssid)
     return newMessages
+
+
+def sendConfirmationMessage(song, number):
+    if int(song.votes) == int(topVotedSong(songList).votes):
+        body = "Hi, you have successfully voted for " + song.title + " by " + song.artist + ". It's currently set to be queued up next!"
+    else:
+        numberMore = int(topVotedSong(songList).votes) - int(song.votes)
+        body = "Hi, you have successfully voted for " + song.title + " by " + song.artist + ". It needs " + str(numberMore) + " vote(s) to queued up next!"
+    to = number
+    from_ = twilioNumber
+    client.messages.create(body=body, to=to, from_=from_)
+    print("sent message to " + number)
+    time.sleep(1)
 
 
 def loopFunction():
@@ -131,23 +154,23 @@ def loopFunction():
                 break
 
             s = parseQuery(query)
-
-            if not listContains(s, songList):
-                songList.append(s)
-                s.vote()
+            if s == 'error':
+                client.messages.create(body="Sorry, we couldn't find your song.", to=i.fromNum, from_=twilioNumber)
+                print("sent message to " + i.fromNum)
+                time.sleep(1)
             else:
-                s = returnSong(s, songList)
-                if not s.votes == -1:
+                if not listContains(s, songList):
+                    songList.append(s)
                     s.vote()
-            print(s.title)
-            print(s.votes)
+                else:
+                    s = returnSong(s, songList)
+                    if not s.votes == -1:
+                        s.vote()
+                print(s.title)
+                print(s.votes)
+                sendConfirmationMessage(s, i.fromNum)
     time.sleep(1)
 
-
-
-
-account_sid = "ACbf9419ced7dab1a623f67761020ac869"
-auth_token = "e1ce02cee81b5fc6605e734845ea6882"
 client = TwilioRestClient(account_sid, auth_token)
 
 api = Mobileclient()
@@ -176,7 +199,7 @@ s2 = parseQuery(defaultQuery2)
 songList.append(s1)
 songList.append(s2)
 addSong(s1)
-
+s1.votes = -1
 s2.votes = 10
 
 currentSongLength = int(s1.duration)/1000
