@@ -28,3 +28,13 @@ class User():
             self.votedSongs.append(songID)
             return 0
 
+class Message():
+
+
+    """Stores Message Data"""
+
+    def __init__(self, mSSID, query, fromNum):
+        self.mSSID = mSSID
+
+        self.query = query
+        self.fromNum = fromNum
