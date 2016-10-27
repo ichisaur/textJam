@@ -6,25 +6,25 @@ import threading
 import time
 
 
-loginID = 'jusanden7'
-authToken = 'eebodpzhtmklvxas'
+loginID = #google username
+authToken = #google password
 
 
-account_sid = 'ACbf9419ced7dab1a623f67761020ac869'
-auth_token = 'e1ce02cee81b5fc6605e734845ea6882'
+account_sid = #twilio accoun sid
+auth_token = #twilio auth token
 
 
 PLAYLISTNAME = 'textJam'
 defaultQuery1 = "Mr. Brightside"
 defaultQuery2 = "Ho Hey"
-twilioNumber = '+12069730847'
+twilioNumber = #twilio phone number
+
 
 
 currentSongLength = 15
 stopPlayback = False
 isPlaylistCreated = False
 listOfMessages = []
-
 
 class timerThread (threading.Thread):
     def __init__(self, threadID):
@@ -36,7 +36,7 @@ class timerThread (threading.Thread):
         global currentSongLength
         while not stopPlayback:
             temp = currentSongLength
-            currentSongLength = int(topVotedSong(songList).duration)
+            currentSongLength = int(topVotedSong(songList).duration)/5000
             done = addTopSong(songList)
             if done:
                 time.sleep(temp)
@@ -59,7 +59,6 @@ def createPlaylist():
 
     playlistID = api.create_playlist(PLAYLISTNAME, 'none', True)
     isPlaylistCreated = True
-
 
 def deletePlaylist():
     global isPlaylistCreated
@@ -122,12 +121,11 @@ def filterMessages(number):
     messages = client.messages.list(to=number)
     newMessages = []
     for i in messages:
-        if i.status == 'received':
-            newMessages.append(parseMessage(i))
-        else:
-            print(i.status)
-    for i in newMessages:
-        client.messages.delete(i.mSSID)
+        newMessages.append(parseMessage(i))
+        ssid = i.sid
+        if i.status == 'queued':
+            time.sleep(2)
+        client.messages.delete(ssid)
     return newMessages
 
 
@@ -141,7 +139,7 @@ def sendConfirmationMessage(song, number):
     from_ = twilioNumber
     client.messages.create(body=body, to=to, from_=from_)
     print("sent message to " + number)
-
+    time.sleep(1)
 
 
 def loopFunction():
@@ -204,7 +202,7 @@ addSong(s1)
 s1.votes = -1
 s2.votes = 10
 
-currentSongLength = int(s1.duration)
+currentSongLength = int(s1.duration)/5000
 
 delayLoop = timerThread(1)
 delayLoop.start()
