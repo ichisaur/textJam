@@ -6,18 +6,18 @@ import threading
 import time
 
 
-loginID = 'jusanden7'
-authToken = 'eebodpzhtmklvxas'
+loginID = #Google Account Username
+authToken = #Google Account Password
 
 
-account_sid = 'ACbf9419ced7dab1a623f67761020ac869'
-auth_token = 'e1ce02cee81b5fc6605e734845ea6882'
+account_sid = #Twilio Account SID
+auth_token = #Twilio Auth Token
 
 
 PLAYLISTNAME = 'textJam'
 defaultQuery1 = "Mr. Brightside"
 defaultQuery2 = "Ho Hey"
-twilioNumber = '+12069730847'
+twilioNumber = #Twilio Number
 
 
 currentSongLength = 15
@@ -36,7 +36,7 @@ class timerThread (threading.Thread):
         global currentSongLength
         while not stopPlayback:
             temp = currentSongLength
-            currentSongLength = int(topVotedSong(songList).duration)
+            currentSongLength = int(topVotedSong(songList).duration)/5000
             done = addTopSong(songList)
             if done:
                 time.sleep(temp)
@@ -204,7 +204,7 @@ addSong(s1)
 s1.votes = -1
 s2.votes = 10
 
-currentSongLength = int(s1.duration)
+currentSongLength = int(s1.duration)/5000
 
 delayLoop = timerThread(1)
 delayLoop.start()
